@@ -1,4 +1,6 @@
 const path = require("path");
+const ESLintPlugin = require("eslint-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
 	entry: "./src/main.js",
@@ -65,10 +67,28 @@ module.exports = {
 					filename: "static/fonts/[hash:10][ext][query]",
 				},
 			},
+			{
+				test: /\.js$/,
+				// node_modules目录下文件无需编辑
+				exclude: /node_modules/,
+				loader: "babel-loader",
+			},
 		],
 	},
 	// 插件
-	plugins: [],
-	// mode: "development",
-	mode: "production",
+	plugins: [
+		new ESLintPlugin({
+			// 指定检查文件的根目录
+			context: path.resolve(__dirname, "src"),
+		}),
+		new HtmlWebpackPlugin({
+			/**
+			 * 以 src/index.html 文件为模板创建新的html文件
+			 * 新html文件特点： 内容和源文件一致 自动引入打包生成的js等资源
+			 */
+			template: path.resolve(__dirname, "src/index.html"),
+		}),
+	],
+	mode: "development",
+	// mode: "production",
 };
