@@ -5,11 +5,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
 	entry: "./src/main.js",
 	output: {
-		// 文件输出路径 要求绝对路径
-		path: path.resolve(__dirname, "dist"),
+		// 开发模式没有输出 不需要指定输出路径
+		path: undefined,
 		filename: "main.js",
-		// 在打包之前 将path整个目录内容清空 再进行打包
-		clean: true,
+		// clean: true // 开发模式没有输出 不需要清空输出结果
 	},
 	module: {
 		rules: [
@@ -79,16 +78,22 @@ module.exports = {
 	plugins: [
 		new ESLintPlugin({
 			// 指定检查文件的根目录
-			context: path.resolve(__dirname, "src"),
+			context: path.resolve(__dirname, "../src"),
 		}),
 		new HtmlWebpackPlugin({
 			/**
 			 * 以 src/index.html 文件为模板创建新的html文件
 			 * 新html文件特点： 内容和源文件一致 自动引入打包生成的js等资源
 			 */
-			template: path.resolve(__dirname, "src/index.html"),
+			template: path.resolve(__dirname, "../src/index.html"),
 		}),
 	],
+	// 开发服务器：不会输出打包资源 在内存中编译打包
+	devServer: {
+		host: "localhost",
+		port: "3000",
+		// 自动打开浏览器
+		open: true,
+	},
 	mode: "development",
-	// mode: "production",
 };
